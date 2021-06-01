@@ -1,5 +1,5 @@
 {
-  "name": "plugin.name",
+  "name": "fryan.goauth",
   "version": "0.0.0",
   "description": "webpack developer tools",
   "main": "main.js",
