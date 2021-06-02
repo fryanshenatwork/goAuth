@@ -30,7 +30,8 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     },
     before (app, server) {
       chokidar.watch([
-        _path.src + '/templates/**/*.html'
+        _path.src + '/templates/**/*.html',
+        _path.src + '/templates/**/*.d.ts',
       ]).on('all', function () {
         server.sockWrite(server.sockets, 'content-changed')
       })
