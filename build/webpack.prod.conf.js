@@ -64,11 +64,7 @@ const prodWebpackConfig = merge(baseWebpackConfig, {
 })
 
 const minifyConfig = merge(prodWebpackConfig, {})
-<<<<<<< HEAD
-minifyConfig.output.filename = require('../package-lock.json').name + '.min.js'
-=======
 minifyConfig.output.filename = require('../package.json').name + '.min.js'
->>>>>>> 09b91b9... fix - production mode
 minifyConfig.optimization.minimizer = [
   new TerserPlugin({
     cache: true,

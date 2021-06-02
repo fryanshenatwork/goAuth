@@ -13,6 +13,7 @@
     "version:patch": "npm version patch --no-git-tag-version;git st; npm run gitTag",
     "version:minor": "npm version minor --no-git-tag-version;git st; npm run gitTag",
     "version:major": "npm version major --no-git-tag-version;git st; npm run gitTag",
+    "version:pre": "npm version prerelease --preid alpha --no-git-tag-version;git st; npm run gitTag",
     "pack": "tar -zcvf ./dist/cloudPlatform_v$npm_package_version.tar.gz -C dist/ ."
   },
   "keywords": [
