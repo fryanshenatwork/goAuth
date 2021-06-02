@@ -1,13 +1,14 @@
 {
   "compilerOptions": {
+    "outDir": "./types/",
     "noImplicitAny": true,
     "module": "es6",
     "target": "es2015",
     "allowJs": true,
     "moduleResolution": "node",
     "sourceMap": true,
-    "declaration": false,
-    "declarationMap": false
+    "declaration": true,
+    "declarationMap": true
   },
   "esModuleInterop": true,
   "allowSyntheticDefaultImports": true,
