@@ -2,9 +2,14 @@
 /******/ 	var __webpack_modules__ = ({
 
 /***/ 362:
-/***/ (function() {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -13,7 +18,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
+var __classPrivateFieldGet = (undefined && undefined.__classPrivateFieldGet) || function (receiver, state, kind, f) {
     if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
@@ -56,50 +61,46 @@ class FryanGoauth {
             const _this = this;
             return {
                 get isSignedIn() {
-                    const gapi = _this.gapi;
+                    const { gapi } = _this;
                     let signed = false;
                     try {
                         signed = gapi.auth2.getAuthInstance().isSignedIn.get();
                     }
                     catch (ers) {
-                        console.log('[isSignedIn] - Unready init');
+                        console.log('[isSignedIn] - Unready init'); // eslint-disable-line
                     }
                     return signed;
                 },
-                signin: function () {
-                    const gapi = _this.gapi;
+                signin() {
+                    const { gapi } = _this;
                     if (this.isSignedIn) {
                         return Promise.reject('Already signed in');
                     }
-                    else {
-                        try {
-                            let r = gapi.auth2.getAuthInstance().signIn();
-                            return Promise.resolve(r);
-                        }
-                        catch (ers) {
-                            console.log('[signin] - Unready init', ers);
-                            return Promise.reject();
-                        }
+                    try {
+                        const r = gapi.auth2.getAuthInstance().signIn();
+                        return Promise.resolve(r);
+                    }
+                    catch (ers) {
+                        // console.log('[signin] - Unready init', ers)
+                        return Promise.reject(ers);
                     }
                 },
-                signout: function () {
-                    const gapi = _this.gapi;
+                signout() {
+                    const { gapi } = _this;
                     if (!this.isSignedIn) {
                         return Promise.reject('Already signed out');
                     }
-                    else {
-                        try {
-                            let r = gapi.auth2.getAuthInstance().signOut();
-                            return Promise.resolve(r);
-                        }
-                        catch (ers) {
-                            console.log('[signOut] - Unready init', ers);
-                            return Promise.reject();
-                        }
+                    try {
+                        const r = gapi.auth2.getAuthInstance().signOut();
+                        return Promise.resolve(r);
+                    }
+                    catch (ers) {
+                        // console.log('[signOut] - Unready init', ers)
+                        return Promise.reject(ers);
                     }
                 },
                 get getUserProfile() {
-                    const gapi = _this.gapi;
+                    const { gapi } = _this;
                     if (!this.isSignedIn) {
                         return Promise.reject(false);
                     }
@@ -112,7 +113,7 @@ class FryanGoauth {
                             giveName: profile.getGivenName(),
                             familyName: profile.getFamilyName(),
                             image: profile.getImageUrl(),
-                            email: profile.getEmail(),
+                            email: profile.getEmail()
                         });
                     }
                     catch (ers) {
@@ -127,54 +128,52 @@ class FryanGoauth {
                 const _this = this;
                 const isHttps = yield (function () {
                     return __awaiter(this, void 0, void 0, function* () {
-                        if (location.protocol !== 'https:') {
-                            location.href = 'https:' + window.location.href.substring(window.location.protocol.length);
+                        if (window.location.protocol !== 'https:') {
+                            window.location.href = `https:${window.location.href.substring(window.location.protocol.length)}`;
                             return false;
                         }
                         return true;
                     });
-                })();
+                }());
                 if (!isHttps) {
                     reject('Not https');
                 }
-                const loadGapi = yield ((url) => {
-                    return new Promise((resolve, reject) => {
-                        var script = document.createElement('script');
-                        script.type = 'text/javascript';
-                        try {
-                            script.onload = function (e) {
-                                if (window.gapi !== undefined) {
-                                    resolve(true);
-                                }
-                                else {
-                                    reject(false);
-                                }
-                            };
-                            script.onerror = () => { reject(false); };
-                            script.src = url;
-                            document.getElementsByTagName("head")[0].appendChild(script);
-                        }
-                        catch (ers) {
-                            reject(false);
-                        }
-                    });
-                })(FryanGoauth['#GAPI'])
+                const loadGapi = yield ((url) => new Promise((loadGapiResolve, loadGapiReject) => {
+                    const script = document.createElement('script');
+                    script.type = 'text/javascript';
+                    try {
+                        script.onload = function (e) {
+                            if (window.gapi !== undefined) {
+                                loadGapiResolve(true);
+                            }
+                            else {
+                                loadGapiReject(false);
+                            }
+                        };
+                        script.onerror = () => { loadGapiReject(false); };
+                        script.src = url;
+                        document.getElementsByTagName('head')[0].appendChild(script);
+                    }
+                    catch (ers) {
+                        loadGapiReject(false);
+                    }
+                }))(FryanGoauth['#GAPI'])
                     .then(() => {
                     FryanGoauth['#LIFECYCLE'].afterGapiMounted(window.gapi);
                     this.gapi = window.gapi;
                     return true;
                 })
-                    .catch(() => { return false; });
+                    .catch(() => false);
                 if (!loadGapi) {
                     reject('Gapi is not loaded');
                 }
                 const loadGapiClient = yield (function () {
                     return __awaiter(this, void 0, void 0, function* () {
-                        const gapi = _this.gapi;
-                        return yield new Promise((sResolve, sReject) => {
-                            gapi.load('client', function () {
-                                if (gapi &&
-                                    gapi.client) {
+                        const { gapi } = _this;
+                        const task = yield new Promise((sResolve, sReject) => {
+                            gapi.load('client', () => {
+                                if (gapi
+                                    && gapi.client) {
                                     sResolve(true);
                                 }
                                 else {
@@ -186,14 +185,15 @@ class FryanGoauth {
                             FryanGoauth['#LIFECYCLE'].afterGapiClientMounted(_this.gapi.client);
                             return true;
                         })
-                            .catch(() => { return false; });
+                            .catch(() => false);
+                        return task;
                     });
-                })();
+                }());
                 if (!loadGapiClient) {
                     reject('Error when loading client from gapi ');
                 }
                 const loadGoAuth = yield (() => __awaiter(this, void 0, void 0, function* () {
-                    return yield new Promise((goAuthResolve, goAuthReject) => {
+                    const task = yield new Promise((goAuthResolve, goAuthReject) => {
                         const gClient = this.gapi.client;
                         const GOAUTH_CONFIG = FryanGoauth['#GOAUTH_CONFIG'];
                         gClient.init({
@@ -202,8 +202,8 @@ class FryanGoauth {
                             scope: GOAUTH_CONFIG.scopes.join(' '),
                             discoveryDocs: GOAUTH_CONFIG.discoveryDocs
                         })
-                            .then(function () {
-                            const auth2 = _this.gapi.auth2;
+                            .then(() => {
+                            const { auth2 } = _this.gapi;
                             const checkSignInOut = function (isSignedIn) {
                                 if (isSignedIn) {
                                     // signin
@@ -222,7 +222,7 @@ class FryanGoauth {
                                 FryanGoauth['#LIFECYCLE'].afterOAuthSigned(isSignedIn);
                             };
                             // listen Signin
-                            auth2.getAuthInstance().isSignedIn.listen(function (isSignedIn) {
+                            auth2.getAuthInstance().isSignedIn.listen((isSignedIn) => {
                                 checkSignInOut(isSignedIn);
                             });
                             Promise.resolve(auth2.getAuthInstance()).then(() => {
@@ -238,6 +238,7 @@ class FryanGoauth {
                             goAuthReject(`An error occurred when loading gapi.client.oAuth`);
                         });
                     });
+                    return task;
                 }))();
                 if (!loadGoAuth) {
                     reject('Error when loading gapi.client.auth');
@@ -275,7 +276,8 @@ FryanGoauth['#GOAUTH_CONFIG'] = {
     discoveryDocs: [],
     scopes: []
 };
-window.FryanGoauth = FryanGoauth;
+// window.FryanGoauth = FryanGoauth
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (FryanGoauth);
 
 
 /***/ })
@@ -300,11 +302,40 @@ window.FryanGoauth = FryanGoauth;
 /******/ 		};
 /******/ 	
 /******/ 		// Execute the module function
-/******/ 		__webpack_modules__[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
 /******/ 	
 /******/ 		// Return the exports of the module
 /******/ 		return module.exports;
 /******/ 	}
+/******/ 	
+/************************************************************************/
+/******/ 	/* webpack/runtime/define property getters */
+/******/ 	(() => {
+/******/ 		// define getter functions for harmony exports
+/******/ 		__webpack_require__.d = (exports, definition) => {
+/******/ 			for(var key in definition) {
+/******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
+/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 				}
+/******/ 			}
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	(() => {
+/******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/make namespace object */
+/******/ 	(() => {
+/******/ 		// define __esModule on exports
+/******/ 		__webpack_require__.r = (exports) => {
+/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 			}
+/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 		};
+/******/ 	})();
 /******/ 	
 /************************************************************************/
 var __webpack_exports__ = {};

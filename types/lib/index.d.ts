@@ -1,5 +1,7 @@
-interface Window {
-    gapi: object;
+declare global {
+    interface Window {
+        gapi: any;
+    }
 }
 interface FryanGoAuthInterface {
 }
@@ -42,4 +44,5 @@ declare class FryanGoauth implements FryanGoAuthInterface {
     afterOAuthSigned: (fn: () => {}) => this;
     auth: any;
 }
+export default FryanGoauth;
 //# sourceMappingURL=index.d.ts.map
