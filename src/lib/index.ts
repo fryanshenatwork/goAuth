@@ -1,4 +1,10 @@
-interface Window { gapi: object }
+declare global {
+  // eslint-disable-next-line
+  interface Window {
+    gapi: any
+  }
+}
+
 interface FryanGoAuthInterface {
 
 }
@@ -17,9 +23,11 @@ interface configI {
   }
 }
 
-class FryanGoauth implements FryanGoAuthInterface{
+class FryanGoauth implements FryanGoAuthInterface {
   static '#GAPI': string
+
   static '#AUTH_OPTIONS': configOauthI
+
   static '#LIFECYCLE' = {
     afterGapiMounted: (gapi?: object) => {},
     afterGapiClientMounted: (gapiClient?: object) => {},
@@ -79,10 +87,12 @@ class FryanGoauth implements FryanGoAuthInterface{
     FryanGoauth['#LIFECYCLE'].oAuthSignedIn = fn
     return this
   }
+
   oAuthSignedOut = (fn: () => {}) => {
     FryanGoauth['#LIFECYCLE'].oAuthSignedOut = fn
     return this
   }
+
   afterOAuthSigned = (fn: () => {}) => {
     FryanGoauth['#LIFECYCLE'].afterOAuthSigned = fn
     return this
@@ -94,47 +104,45 @@ class FryanGoauth implements FryanGoAuthInterface{
 
     return {
       get isSignedIn () {
-        const gapi = _this.gapi
+        const { gapi } = _this
         let signed = false
         try {
           signed = gapi.auth2.getAuthInstance().isSignedIn.get()
         } catch (ers) {
-          console.log('[isSignedIn] - Unready init')
+          console.log('[isSignedIn] - Unready init') // eslint-disable-line
         }
         return signed
       },
-      signin: function () : Promise<any> {
-        const gapi = _this.gapi
+      signin () : Promise<any> {
+        const { gapi } = _this
 
         if (this.isSignedIn) {
           return Promise.reject('Already signed in')
-        } else {
-          try {
-            let r = gapi.auth2.getAuthInstance().signIn()
-            return Promise.resolve(r)
-          } catch (ers) {
-            console.log('[signin] - Unready init', ers)
-            return Promise.reject()
-          }
+        }
+        try {
+          const r = gapi.auth2.getAuthInstance().signIn()
+          return Promise.resolve(r)
+        } catch (ers) {
+          // console.log('[signin] - Unready init', ers)
+          return Promise.reject(ers)
         }
       },
-      signout: function () : Promise<any>{
-        const gapi = _this.gapi
+      signout () : Promise<any> {
+        const { gapi } = _this
 
         if (!this.isSignedIn) {
           return Promise.reject('Already signed out')
-        } else {
-          try {
-            let r = gapi.auth2.getAuthInstance().signOut()
-            return Promise.resolve(r)
-          } catch (ers) {
-            console.log('[signOut] - Unready init', ers)
-            return Promise.reject()
-          }
+        }
+        try {
+          const r = gapi.auth2.getAuthInstance().signOut()
+          return Promise.resolve(r)
+        } catch (ers) {
+          // console.log('[signOut] - Unready init', ers)
+          return Promise.reject(ers)
         }
       },
       get getUserProfile () : Promise<any> {
-        const gapi = _this.gapi
+        const { gapi } = _this
 
         if (!this.isSignedIn) {
           return Promise.reject(false)
@@ -148,7 +156,7 @@ class FryanGoauth implements FryanGoAuthInterface{
             giveName: profile.getGivenName(),
             familyName: profile.getFamilyName(),
             image: profile.getImageUrl(),
-            email: profile.getEmail(),
+            email: profile.getEmail()
           })
         } catch (ers) {
           return Promise.reject('[getUserProfile] - Error when get user profile')
@@ -163,49 +171,48 @@ class FryanGoauth implements FryanGoAuthInterface{
       const _this = this
 
       const isHttps: boolean = await (async function () {
-        if (location.protocol !== 'https:') {
-          location.href = 'https:' + window.location.href.substring(window.location.protocol.length)
+        if (window.location.protocol !== 'https:') {
+          window.location.href = `https:${window.location.href.substring(window.location.protocol.length)}`
           return false
         }
         return true
-      })()
+      }())
       if (!isHttps) { reject('Not https') }
 
-      const loadGapi: boolean = await ((url: string) => {
-        return new Promise((resolve, reject) => {
-          var script = document.createElement('script')
+      const loadGapi: boolean = await (
+        (url: string) => new Promise((loadGapiResolve, loadGapiReject) => {
+          const script = document.createElement('script')
           script.type = 'text/javascript'
           try {
             script.onload = function (e) {
               if (window.gapi !== undefined) {
-                resolve(true)
+                loadGapiResolve(true)
               } else {
-                reject(false)
+                loadGapiReject(false)
               }
-            };
-            script.onerror = () => { reject(false) }
+            }
+            script.onerror = () => { loadGapiReject(false) }
             script.src = url
-            document.getElementsByTagName("head")[0].appendChild(script)
+            document.getElementsByTagName('head')[0].appendChild(script)
           } catch (ers: any) {
-            reject(false)
+            loadGapiReject(false)
           }
-        })
-      })(FryanGoauth['#GAPI'])
+        }))(FryanGoauth['#GAPI'])
         .then(() => {
           FryanGoauth['#LIFECYCLE'].afterGapiMounted(window.gapi)
           this.gapi = window.gapi
           return true
         })
-        .catch(() => { return false })
+        .catch(() => false)
       if (!loadGapi) { reject('Gapi is not loaded') }
 
       const loadGapiClient: any = await (async function () {
-        const gapi = _this.gapi
-        return await new Promise((sResolve, sReject) => {
-          gapi.load('client', function () {
+        const { gapi } = _this
+        const task = await new Promise((sResolve, sReject) => {
+          gapi.load('client', () => {
             if (
-              gapi &&
-              gapi.client
+              gapi
+              && gapi.client
             ) {
               sResolve(true)
             } else {
@@ -217,70 +224,73 @@ class FryanGoauth implements FryanGoAuthInterface{
             FryanGoauth['#LIFECYCLE'].afterGapiClientMounted(_this.gapi.client)
             return true
           })
-          .catch(() => { return false })
-      })()
+          .catch(() => false)
+        return task
+      }())
       if (!loadGapiClient) { reject('Error when loading client from gapi ') }
 
-      const loadGoAuth: any = await (async () => {
-        return await new Promise((goAuthResolve, goAuthReject) => {
-          const gClient = this.gapi.client
-          const GOAUTH_CONFIG = FryanGoauth['#GOAUTH_CONFIG']
+      const loadGoAuth: any = await (
+        async () => {
+          const task = await new Promise((goAuthResolve, goAuthReject) => {
+            const gClient = this.gapi.client
+            const GOAUTH_CONFIG = FryanGoauth['#GOAUTH_CONFIG']
 
-          gClient.init({
-            apiKey: GOAUTH_CONFIG.apiKey,
-            clientId: GOAUTH_CONFIG.clientID,
-            scope: GOAUTH_CONFIG.scopes.join(' '),
-            discoveryDocs: GOAUTH_CONFIG.discoveryDocs
-          })
-            .then(function () {
-              const auth2 = _this.gapi.auth2
+            gClient.init({
+              apiKey: GOAUTH_CONFIG.apiKey,
+              clientId: GOAUTH_CONFIG.clientID,
+              scope: GOAUTH_CONFIG.scopes.join(' '),
+              discoveryDocs: GOAUTH_CONFIG.discoveryDocs
+            })
+              .then(() => {
+                const { auth2 } = _this.gapi
 
-              const checkSignInOut = function (isSignedIn: boolean) {
-                if (isSignedIn) {
-                  // signin
-                  const profile = auth2.getAuthInstance().currentUser.get()
-                  const getProfile = profile.getBasicProfile()
-                  const gmail = getProfile.getEmail()
-                  const guid = getProfile.getId()
-                  FryanGoauth['#LIFECYCLE'].oAuthSignedIn({
-                    guid, gmail
-                  })
-                } else {
-                  // signout
-                  FryanGoauth['#LIFECYCLE'].oAuthSignedOut()
+                const checkSignInOut = function (isSignedIn: boolean) {
+                  if (isSignedIn) {
+                    // signin
+                    const profile = auth2.getAuthInstance().currentUser.get()
+                    const getProfile = profile.getBasicProfile()
+                    const gmail = getProfile.getEmail()
+                    const guid = getProfile.getId()
+                    FryanGoauth['#LIFECYCLE'].oAuthSignedIn({
+                      guid, gmail
+                    })
+                  } else {
+                    // signout
+                    FryanGoauth['#LIFECYCLE'].oAuthSignedOut()
+                  }
+                  FryanGoauth['#LIFECYCLE'].afterOAuthSigned(isSignedIn)
                 }
-                FryanGoauth['#LIFECYCLE'].afterOAuthSigned(isSignedIn)
-              }
 
-              // listen Signin
-              auth2.getAuthInstance().isSignedIn.listen(
-                function (isSignedIn: boolean) {
-                  checkSignInOut(isSignedIn)
-                }
-              )
+                // listen Signin
+                auth2.getAuthInstance().isSignedIn.listen(
+                  (isSignedIn: boolean) => {
+                    checkSignInOut(isSignedIn)
+                  }
+                )
 
-              Promise.resolve(
-                auth2.getAuthInstance()
-              ).then(() => {
-                const signInStatus = auth2.getAuthInstance().isSignedIn.get()
-                checkSignInOut(signInStatus)
-                if (!signInStatus) {
-                  auth2.getAuthInstance().signIn()
-                }
-                goAuthResolve(true)
+                Promise.resolve(
+                  auth2.getAuthInstance()
+                ).then(() => {
+                  const signInStatus = auth2.getAuthInstance().isSignedIn.get()
+                  checkSignInOut(signInStatus)
+                  if (!signInStatus) {
+                    auth2.getAuthInstance().signIn()
+                  }
+                  goAuthResolve(true)
+                })
               })
-            })
-            .catch((ers : any) => {
-              goAuthReject( `An error occurred when loading gapi.client.oAuth`)
-            })
-
-        })
-      })()
-      if (!loadGoAuth) { reject('Error when loading gapi.client.auth')}
+              .catch((ers : any) => {
+                goAuthReject(`An error occurred when loading gapi.client.oAuth`)
+              })
+          })
+          return task
+        }
+      )()
+      if (!loadGoAuth) { reject('Error when loading gapi.client.auth') }
       resolve(true)
-
     })
   }
 }
 
-window.FryanGoauth = FryanGoauth
+// window.FryanGoauth = FryanGoauth
+export default FryanGoauth
