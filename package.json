@@ -24,6 +24,7 @@
   "files": [
     "src",
     "dist/*.js",
+    "dist/*.map",
     "types/*.d.ts"
   ],
   "author": "FR",

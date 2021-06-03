@@ -104,7 +104,13 @@ const baseWebpackConfig = function (process) {
       //   : _path.buildAssets + 'bundle.js',
       publicPath: process.env.NODE_ENV === 'production'
       ? './'
-      : '/'
+      : '/',
+      chunkLoadingGlobal: 'FryanGoauth',
+      library: 'FryanGoauth',
+      libraryTarget: 'umd',
+      filename: 'fryan.goauth.js',
+      auxiliaryComment: 'Test Comment',
+      clean: true
     },
     devtool: 'inline-source-map',
     resolve: {
