@@ -1,14 +1,10 @@
 /******/ (() => { // webpackBootstrap
-/******/ 	var __webpack_modules__ = ({
+/******/ 	"use strict";
+var __webpack_exports__ = {};
 
-/***/ 362:
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+// UNUSED EXPORTS: default
 
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
+;// CONCATENATED MODULE: ./src/lib/index.ts
 var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -24,36 +20,36 @@ var __classPrivateFieldGet = (undefined && undefined.__classPrivateFieldGet) || 
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
 var _FryanGoauth_init;
-class FryanGoauth {
+class lib_FryanGoauth {
     constructor(config) {
         this.gapi = undefined;
         // HOOKS
         this.then = (fn) => {
-            FryanGoauth['#LIFECYCLE'].success = fn;
+            lib_FryanGoauth['#LIFECYCLE'].success = fn;
             return this;
         };
         this.catch = (fn) => {
-            FryanGoauth['#LIFECYCLE'].error = fn;
+            lib_FryanGoauth['#LIFECYCLE'].error = fn;
             return this;
         };
         this.afterGapiMounted = (fn) => {
-            FryanGoauth['#LIFECYCLE'].afterGapiMounted = fn;
+            lib_FryanGoauth['#LIFECYCLE'].afterGapiMounted = fn;
             return this;
         };
         this.afterGapiClientMounted = (fn) => {
-            FryanGoauth['#LIFECYCLE'].afterGapiClientMounted = fn;
+            lib_FryanGoauth['#LIFECYCLE'].afterGapiClientMounted = fn;
             return this;
         };
         this.oAuthSignedIn = (fn) => {
-            FryanGoauth['#LIFECYCLE'].oAuthSignedIn = fn;
+            lib_FryanGoauth['#LIFECYCLE'].oAuthSignedIn = fn;
             return this;
         };
         this.oAuthSignedOut = (fn) => {
-            FryanGoauth['#LIFECYCLE'].oAuthSignedOut = fn;
+            lib_FryanGoauth['#LIFECYCLE'].oAuthSignedOut = fn;
             return this;
         };
         this.afterOAuthSigned = (fn) => {
-            FryanGoauth['#LIFECYCLE'].afterOAuthSigned = fn;
+            lib_FryanGoauth['#LIFECYCLE'].afterOAuthSigned = fn;
             return this;
         };
         // methods
@@ -157,9 +153,9 @@ class FryanGoauth {
                     catch (ers) {
                         loadGapiReject(false);
                     }
-                }))(FryanGoauth['#GAPI'])
+                }))(lib_FryanGoauth['#GAPI'])
                     .then(() => {
-                    FryanGoauth['#LIFECYCLE'].afterGapiMounted(window.gapi);
+                    lib_FryanGoauth['#LIFECYCLE'].afterGapiMounted(window.gapi);
                     this.gapi = window.gapi;
                     return true;
                 })
@@ -182,7 +178,7 @@ class FryanGoauth {
                             });
                         })
                             .then(() => {
-                            FryanGoauth['#LIFECYCLE'].afterGapiClientMounted(_this.gapi.client);
+                            lib_FryanGoauth['#LIFECYCLE'].afterGapiClientMounted(_this.gapi.client);
                             return true;
                         })
                             .catch(() => false);
@@ -195,7 +191,7 @@ class FryanGoauth {
                 const loadGoAuth = yield (() => __awaiter(this, void 0, void 0, function* () {
                     const task = yield new Promise((goAuthResolve, goAuthReject) => {
                         const gClient = this.gapi.client;
-                        const GOAUTH_CONFIG = FryanGoauth['#GOAUTH_CONFIG'];
+                        const GOAUTH_CONFIG = lib_FryanGoauth['#GOAUTH_CONFIG'];
                         gClient.init({
                             apiKey: GOAUTH_CONFIG.apiKey,
                             clientId: GOAUTH_CONFIG.clientID,
@@ -211,15 +207,15 @@ class FryanGoauth {
                                     const getProfile = profile.getBasicProfile();
                                     const gmail = getProfile.getEmail();
                                     const guid = getProfile.getId();
-                                    FryanGoauth['#LIFECYCLE'].oAuthSignedIn({
+                                    lib_FryanGoauth['#LIFECYCLE'].oAuthSignedIn({
                                         guid, gmail
                                     });
                                 }
                                 else {
                                     // signout
-                                    FryanGoauth['#LIFECYCLE'].oAuthSignedOut();
+                                    lib_FryanGoauth['#LIFECYCLE'].oAuthSignedOut();
                                 }
-                                FryanGoauth['#LIFECYCLE'].afterOAuthSigned(isSignedIn);
+                                lib_FryanGoauth['#LIFECYCLE'].afterOAuthSigned(isSignedIn);
                             };
                             // listen Signin
                             auth2.getAuthInstance().isSignedIn.listen((isSignedIn) => {
@@ -246,22 +242,22 @@ class FryanGoauth {
                 resolve(true);
             }));
         });
-        FryanGoauth['#GAPI'] = `${config.gapiPath}`;
-        FryanGoauth['#GOAUTH_CONFIG'].apiKey = config.oAuthConfig.apiKey;
-        FryanGoauth['#GOAUTH_CONFIG'].clientID = config.oAuthConfig.clientID;
-        FryanGoauth['#GOAUTH_CONFIG'].discoveryDocs = config.oAuthConfig.discoveryDocs;
-        FryanGoauth['#GOAUTH_CONFIG'].scopes = config.oAuthConfig.scopes;
+        lib_FryanGoauth['#GAPI'] = `${config.gapiPath}`;
+        lib_FryanGoauth['#GOAUTH_CONFIG'].apiKey = config.oAuthConfig.apiKey;
+        lib_FryanGoauth['#GOAUTH_CONFIG'].clientID = config.oAuthConfig.clientID;
+        lib_FryanGoauth['#GOAUTH_CONFIG'].discoveryDocs = config.oAuthConfig.discoveryDocs;
+        lib_FryanGoauth['#GOAUTH_CONFIG'].scopes = config.oAuthConfig.scopes;
         __classPrivateFieldGet(this, _FryanGoauth_init, "f").call(this)
             .then(() => {
-            FryanGoauth['#LIFECYCLE'].success();
+            lib_FryanGoauth['#LIFECYCLE'].success();
         })
             .catch((err) => {
-            FryanGoauth['#LIFECYCLE'].error(err);
+            lib_FryanGoauth['#LIFECYCLE'].error(err);
         });
     }
 }
 _FryanGoauth_init = new WeakMap();
-FryanGoauth['#LIFECYCLE'] = {
+lib_FryanGoauth['#LIFECYCLE'] = {
     afterGapiMounted: (gapi) => { },
     afterGapiClientMounted: (gapiClient) => { },
     oAuthSignedIn: (opt) => { },
@@ -270,80 +266,19 @@ FryanGoauth['#LIFECYCLE'] = {
     success: () => { },
     error: (err) => { }
 };
-FryanGoauth['#GOAUTH_CONFIG'] = {
+lib_FryanGoauth['#GOAUTH_CONFIG'] = {
     apiKey: ``,
     clientID: ``,
     discoveryDocs: [],
     scopes: []
 };
 // window.FryanGoauth = FryanGoauth
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (FryanGoauth);
+/* harmony default export */ const lib = (lib_FryanGoauth);
 
+;// CONCATENATED MODULE: ./src/main.js
 
-/***/ })
-
-/******/ 	});
-/************************************************************************/
-/******/ 	// The module cache
-/******/ 	var __webpack_module_cache__ = {};
-/******/ 	
-/******/ 	// The require function
-/******/ 	function __webpack_require__(moduleId) {
-/******/ 		// Check if module is in cache
-/******/ 		var cachedModule = __webpack_module_cache__[moduleId];
-/******/ 		if (cachedModule !== undefined) {
-/******/ 			return cachedModule.exports;
-/******/ 		}
-/******/ 		// Create a new module (and put it into the cache)
-/******/ 		var module = __webpack_module_cache__[moduleId] = {
-/******/ 			// no module.id needed
-/******/ 			// no module.loaded needed
-/******/ 			exports: {}
-/******/ 		};
-/******/ 	
-/******/ 		// Execute the module function
-/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
-/******/ 	
-/******/ 		// Return the exports of the module
-/******/ 		return module.exports;
-/******/ 	}
-/******/ 	
-/************************************************************************/
-/******/ 	/* webpack/runtime/define property getters */
-/******/ 	(() => {
-/******/ 		// define getter functions for harmony exports
-/******/ 		__webpack_require__.d = (exports, definition) => {
-/******/ 			for(var key in definition) {
-/******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
-/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
-/******/ 				}
-/******/ 			}
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
-/******/ 	(() => {
-/******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/make namespace object */
-/******/ 	(() => {
-/******/ 		// define __esModule on exports
-/******/ 		__webpack_require__.r = (exports) => {
-/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
-/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
-/******/ 			}
-/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/************************************************************************/
-var __webpack_exports__ = {};
-// This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
-(() => {
-__webpack_require__(362);
-})();
-
+window.FryanGoauth = lib;
+/* harmony default export */ const main = ((/* unused pure expression or super */ null && (FryanGoauth)));
 /******/ })()
 ;
 //# sourceMappingURL=fryan.goauth.js.map
